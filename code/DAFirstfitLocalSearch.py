@@ -299,7 +299,7 @@ def PutIns2RandomMach(status, data_block, machinelist, lenmachinelist, S_ins):
             break
         else:
             GetOutInsFromMachine(data_block, status, S_ins, S_mach)
-            print(information)
+            # print(information)
         if S_mach == random_mach_list[-1]:
             succ = 0
             # input('cantfind')
@@ -321,6 +321,7 @@ def LoadStep1(status, data_block, machinelist, movehistory):
     # the output is the statues after loading the working app and the
     # moving trace of conflicting ins.
 
+    print("start step 1")
     app_cons, app_resources, instan_deploy, machine_resources = data_block
     ins_to_machine = status['list_ins2machine']
     list_ins = list(instan_deploy)
@@ -341,6 +342,7 @@ def LoadStep2(status, data_block, machinelist, movehistory):
     # the output is the statues after loading the working app and the
     # moving trace of conflicting ins.
 
+    print("start step 2")
     lenmachinelist = len(machinelist)
     app_cons, app_resources, instan_deploy, machine_resources = data_block
 
@@ -355,7 +357,7 @@ def LoadStep2(status, data_block, machinelist, movehistory):
                 status, data_block, machinelist, lenmachinelist, S_ins)
             if succ == 1:
                 movehistory.append([S_ins, new_mach])
-                print("LoadStep2 : put ins {} to Mach {}".format(S_ins, S_mach))
+                # print("LoadStep2 : put ins {} to Mach {}".format(S_ins, S_mach))
             else:
                 input('cant find')
             machine_status = status[S_mach]
@@ -371,6 +373,7 @@ def LoadStep3(status, data_block, machinelist, movehistory):
     # the output is the statues after loading the working app and the
     # moving trace of conflicting ins.
 
+    print("start step 3")
     lenmachinelist = len(machinelist)
     app_cons, app_resources, instan_deploy, machine_resources = data_block
 
@@ -388,7 +391,7 @@ def LoadStep3(status, data_block, machinelist, movehistory):
                 status, data_block, machinelist, lenmachinelist, S_ins)
             if succ == 1:
                 movehistory.append([S_ins, new_mach])
-                print("LoadStep3 : put ins {} to Mach {}".format(S_ins, S_mach))
+                # print("LoadStep3 : put ins {} to Mach {}".format(S_ins, S_mach))
             else:
                 input('cant find')
             machine_status = status[S_mach]
@@ -403,12 +406,17 @@ def LoadStep4(status, data_block, machinelist, movehistory):
     # the output is the statues after loading the working app and the
     # moving trace of conflicting ins.
 
+    print("start step 4")
     app_cons, app_resources, instan_deploy, machine_resources = data_block
     list_ins = list(instan_deploy)
     sorted_ins_list = zzlsave.LoadSortIns('./savetxt.txt')
     lenmachinelist = len(machinelist)
 
     for i in range(len(list_ins)):
+        
+        if i % (len(list_ins) // 100 ) == 1:
+            print("step process {} percent".format(i/len(list_ins)))
+        
         num_of_try = -1
         S_ins = int(sorted_ins_list[i, 0])
         S_mach = Ins2Machine(data_block, S_ins)
@@ -417,7 +425,7 @@ def LoadStep4(status, data_block, machinelist, movehistory):
                 status, data_block, machinelist, lenmachinelist, S_ins)
             if succ == 1:
                 movehistory.append([S_ins, S_mach])
-                print("{}: put ins {} to Mach {}".format(i, S_ins, S_mach))
+                # print("{}: put ins {} to Mach {}".format(i, S_ins, S_mach))
             else:
                 input('cant find')
 
@@ -436,17 +444,16 @@ def EmptyMach(status, data_block, S_mach, machinelist, movehistory):
             out = 1
             status = GetOutInsFromMachine(data_block, status, S_ins, S_mach)
             movehistory.append([S_ins, mach])
-            print("EmptyMach: put ins {} to Mach {}".format(S_ins, S_mach))
+            # print("EmptyMach: put ins {} to Mach {}".format(S_ins, S_mach))
         else:
             out = 0
-            # input('cant find')
 
     return out, status, movehistory
 
 
 def GenerateAnswer(move, score, nowTime):
 
-    f_sub = open('./zzl/submit/'+str(score) + 'submit'+nowTime+'.csv', 'w')
+    f_sub = open('./code/submit/'+str(score) + 'submit'+nowTime+'.csv', 'w')
     for item in move:
         print('inst_'+str(item[0])+',machine_'+str(item[1]), file=f_sub)
 
